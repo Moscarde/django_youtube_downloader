@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class Video(models.Model):
-    url = models.URLField(unique=True)
+    url = models.URLField(unique=False)
     title = models.CharField(max_length=255)
     file_path = models.CharField(max_length=500, null=True, blank=True)
     duration_s = models.PositiveIntegerField(null=True, blank=True)
@@ -12,7 +12,11 @@ class Video(models.Model):
     uploader = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(
         max_length=50,
-        choices=[("Pendente", "Pendente"), ("Baixado", "Baixado")],
+        choices=[
+            ("Pendente", "Pendente"),
+            ("Baixado", "Baixado"),
+            ("Excluído", "Excluído"),
+        ],
         default="Pendente",
     )
     created_at = models.DateTimeField(auto_now_add=True)
