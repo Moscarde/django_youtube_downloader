@@ -5,15 +5,12 @@ from celery import shared_task
 from yt_dlp import YoutubeDL
 
 from .models import Video
+from .utils import is_valid_youtube_url
 
 
 @shared_task
 def download_youtube_video(video_url, output_path="downloads"):
-    youtube_regex = re.compile(
-        r"(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.+$"
-    )
-
-    if not youtube_regex.match(video_url):
+    if not is_valid_youtube_url(video_url):
         raise ValueError("A URL fornecida não é uma URL válida do YouTube.")
 
     video_info = get_video_info(video_url)
