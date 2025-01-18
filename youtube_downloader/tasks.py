@@ -37,14 +37,7 @@ def download_youtube_video(video_url, output_path="downloads"):
 def delete_video_file(video_id):
     try:
         video = Video.objects.get(id=video_id)
-        if video.file_path and os.path.exists(video.file_path):
-            os.remove(video.file_path)
-            video.status = "Excluído"
-            video.file_path = ""
-            video.save()
-            print(f"Arquivo do vídeo '{video.title}' excluído com sucesso!")
-        else:
-            print(f"O arquivo '{video.file_path}' não existe ou já foi excluído.")
+        video.delete_file()
     except Video.DoesNotExist:
         print(f"Vídeo com ID {video_id} não encontrado.")
     except Exception as e:
