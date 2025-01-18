@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "youtube_downloader",
     "django_celery_results",
     "django_celery_beat",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
