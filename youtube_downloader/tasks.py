@@ -31,6 +31,7 @@ def download_youtube_video(video_url, output_path="downloads"):
         video.save()
 
         delete_video_file.apply_async((video.id,), countdown=2 * 60)
+        return f"Vídeo '{video.title}' baixado com sucesso!"
 
 
 @shared_task
@@ -38,6 +39,7 @@ def delete_video_file(video_id):
     try:
         video = Video.objects.get(id=video_id)
         video.delete_file()
+        return f"Arquivo do vídeo '{video.title}' excluído com sucesso."
     except Video.DoesNotExist:
         print(f"Vídeo com ID {video_id} não encontrado.")
     except Exception as e:
