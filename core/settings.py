@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "youtube_downloader",
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CELERY_BROKER_URL = "pyamqp://guest@localhost//"
 CELERY_TIMEZONE = "America/Sao_Paulo"
+CELERY_RESULT_BACKEND = 'django-db'
