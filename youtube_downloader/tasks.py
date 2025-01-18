@@ -1,3 +1,4 @@
+import os
 import re
 
 from celery import shared_task
@@ -7,7 +8,7 @@ from .models import Video
 
 
 @shared_task
-def download_youtube_video(video_url, output_path="."):
+def download_youtube_video(video_url, output_path="downloads"):
     youtube_regex = re.compile(
         r"(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.+$"
     )
@@ -27,12 +28,30 @@ def download_youtube_video(video_url, output_path="."):
         status="Pendente",
     )
 
-    if download_video(video_url, output_path):
+    if file_path := download_video(video_url, output_path):
         video.status = "Baixado"
-        video.file_path = f"{output_path}/{video.title}.mp4"
+        video.file_path = file_path
         video.save()
 
-    
+        delete_video_file.apply_async((video.id,), countdown=2 * 60)
+
+
+@shared_task
+def delete_video_file(video_id):
+    try:
+        video = Video.objects.get(id=video_id)
+        if video.file_path and os.path.exists(video.file_path):
+            os.remove(video.file_path)
+            video.status = "Excluído"
+            video.file_path = ""
+            video.save()
+            print(f"Arquivo do vídeo '{video.title}' excluído com sucesso!")
+        else:
+            print(f"O arquivo '{video.file_path}' não existe ou já foi excluído.")
+    except Video.DoesNotExist:
+        print(f"Vídeo com ID {video_id} não encontrado.")
+    except Exception as e:
+        print(f"Erro ao excluir o arquivo: {e}")
 
 
 def get_video_info(video_url):
@@ -45,6 +64,7 @@ def get_video_info(video_url):
         info_dict = ydl.extract_info(video_url, download=False)
         return info_dict
 
+
 def download_video(video_url, output_path):
     options = {
         "outtmpl": f"{output_path}/%(title)s.%(ext)s",  # Nome do arquivo de saída
@@ -52,9 +72,10 @@ def download_video(video_url, output_path):
     }
     try:
         with YoutubeDL(options) as ydl:
-            ydl.download([video_url])
+            info_dict = ydl.extract_info(video_url, download=True)
+            filename = ydl.prepare_filename(info_dict)
         print("Download concluído!")
-        return True
+        return filename
     except Exception as e:
         print(f"Erro ao baixar o vídeo: {e}")
-        return False
+        return None
