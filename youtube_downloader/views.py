@@ -44,5 +44,5 @@ class HomePageView(views.APIView):
     """Render the homepage with video objects."""
 
     def get(self, request):
-        videos = None
+        videos = Video.objects.all()[:5]
         return render(request, "youtube_downloader/index.html", {"videos": videos})
