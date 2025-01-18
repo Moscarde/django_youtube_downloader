@@ -16,15 +16,14 @@
 	</head>
 	<body>
 		<h1>Youtube Video Downloader</h1>
-		<form onsubmit="handleFormSubmit(event)">
+		<form id="video-form">
             {% csrf_token %}
-			<div class="input-group">
-				<input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
-				<button type="submit" class="btn btn-primary"> Baixar </button>
-			</div>
-		</form>
-		{% if videos %}
-		<div class="container mt-5">
+            <div class="input-group">
+                <input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
+                <button type="submit" class="btn btn-primary"> Baixar </button>
+            </div>
+        </form>
+		<div class="container mt-5" id="video-table-container" style="display:none;">
 			<h2>Lista de Vídeos</h2>
 			<table class="table table-striped">
 				<thead>
@@ -35,18 +34,10 @@
 						<th scope="col">Status</th>
 					</tr>
 				</thead>
-				<tbody>
-					{% for video in videos %}
-					<tr>
-						<th scope="row">{{ forloop.counter }}</th>
-						<td>{{ video.title }}</td>
-						<td><a href="{{ video.url }}" target="_blank">{{ video.url }}</a></td>
-						<td>{{ video.status }}</td>
-					</tr>
-					{% endfor %}
+				<tbody id="video-table-body">
+					<!-- Tabela será preenchida via JS -->
 				</tbody>
 			</table>
-			{% endif %}
 		</div>
 
 		<!-- Scripts -->
