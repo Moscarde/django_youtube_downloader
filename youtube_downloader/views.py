@@ -6,6 +6,8 @@ from .models import Video
 from .serializers import VideoSerializer
 from .tasks import download_youtube_video
 from .utils import is_valid_youtube_url
+from django.utils import timezone
+from datetime import timedelta
 
 
 class VideoListView(views.APIView):
@@ -13,7 +15,9 @@ class VideoListView(views.APIView):
 
     def get(self, request):
         ip_address = request.META.get('REMOTE_ADDR')
-        videos = Video.objects.filter(ip_address=ip_address)
+        now = timezone.now()
+        five_minutes_ago = now - timedelta(minutes=5)
+        videos = Video.objects.filter(ip_address=ip_address, updated_at__gte=five_minutes_ago)
         serialized_response = VideoSerializer(videos, many=True).data
         return response.Response(data=serialized_response, status=status.HTTP_200_OK)
 
@@ -56,7 +60,8 @@ class HomePageView(views.APIView):
 
     def get(self, request):
         ip_address = request.META.get('REMOTE_ADDR')
-        videos = Video.objects.filter(ip_address=ip_address)
-        print(ip_address)
-        print(len(videos))
+
+        now = timezone.now()
+        five_minutes_ago = now - timedelta(minutes=5)
+        videos = Video.objects.filter(ip_address=ip_address, updated_at__gte=five_minutes_ago)
         return render(request, "youtube_downloader/index.html", {"videos": videos})

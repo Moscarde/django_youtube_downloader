@@ -31,3 +31,33 @@ function handleFormSubmit(event) {
             alert("Ocorreu um erro ao tentar enviar a solicitação.");
         });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const videoTableBody = document.querySelector("tbody");
+
+    // Função para atualizar a tabela de vídeos
+    function updateVideoTable() {
+        fetch("/videos")  // Rota criada para pegar os vídeos
+            .then(response => response.json())
+            .then(data => {
+                // Limpa a tabela
+                videoTableBody.innerHTML = '';
+
+                // Preenche a tabela com os vídeos atualizados
+                data.forEach((video, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <th scope="row">${index + 1}</th>
+                        <td>${video.title}</td>
+                        <td><a href="${video.url}" target="_blank">${video.url}</a></td>
+                        <td>${video.status}</td>
+                    `;
+                    videoTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Erro ao buscar vídeos:', error));
+    }
+
+    // Atualizar a tabela a cada 5 segundos
+    setInterval(updateVideoTable, 5000);
+});
