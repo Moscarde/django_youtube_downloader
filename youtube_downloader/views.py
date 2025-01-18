@@ -38,3 +38,11 @@ class VideoDownloadRequestView(views.APIView):
             data={"message": "A tarefa de download foi iniciada com sucesso!"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+
+class HomePageView(views.APIView):
+    """Render the homepage with video objects."""
+
+    def get(self, request):
+        videos = None
+        return render(request, "youtube_downloader/index.html", {"videos": videos})
