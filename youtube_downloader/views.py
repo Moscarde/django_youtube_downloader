@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.shortcuts import render
 from rest_framework import response, status, views
 
@@ -11,7 +12,8 @@ class VideoListView(views.APIView):
     """Retrieve a list of all videos."""
 
     def get(self, request):
-        videos = Video.objects.all()
+        ip_address = request.META.get('REMOTE_ADDR')
+        videos = Video.objects.filter(ip_address=ip_address)
         serialized_response = VideoSerializer(videos, many=True).data
         return response.Response(data=serialized_response, status=status.HTTP_200_OK)
 
@@ -33,7 +35,16 @@ class VideoDownloadRequestView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        download_youtube_video.delay(video_url)
+        ip_address = request.META.get("REMOTE_ADDR")
+
+        # Checando se o vídeo já foi solicitado recentemente pelo mesmo IP
+        cache_key = f"video_download_{ip_address}_{video_url}"
+
+        # Armazenando o IP e URL no cache para evitar múltiplas solicitações
+        cache.set(cache_key, "requested", timeout=60 * 60)  # 1 hora de timeout
+
+        download_youtube_video.delay(video_url, ip_address=ip_address)
+
         return response.Response(
             data={"message": "A tarefa de download foi iniciada com sucesso!"},
             status=status.HTTP_202_ACCEPTED,
@@ -44,5 +55,8 @@ class HomePageView(views.APIView):
     """Render the homepage with video objects."""
 
     def get(self, request):
-        videos = Video.objects.all()[:5]
+        ip_address = request.META.get('REMOTE_ADDR')
+        videos = Video.objects.filter(ip_address=ip_address)
+        print(ip_address)
+        print(len(videos))
         return render(request, "youtube_downloader/index.html", {"videos": videos})

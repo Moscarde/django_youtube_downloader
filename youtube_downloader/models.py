@@ -1,5 +1,6 @@
-from django.db import models
 import os
+
+from django.db import models
 
 
 # Create your models here.
@@ -22,6 +23,7 @@ class Video(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    ip_address = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         ordering = ["-updated_at"]

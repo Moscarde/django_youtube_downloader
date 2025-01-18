@@ -9,7 +9,7 @@ from .utils import is_valid_youtube_url
 
 
 @shared_task
-def download_youtube_video(video_url, output_path="downloads"):
+def download_youtube_video(video_url, output_path="downloads", ip_address=None):
     if not is_valid_youtube_url(video_url):
         raise ValueError("A URL fornecida não é uma URL válida do YouTube.")
 
@@ -23,6 +23,7 @@ def download_youtube_video(video_url, output_path="downloads"):
         upload_date=video_info["upload_date"],
         uploader=video_info["uploader"],
         status="Pendente",
+        ip_address=ip_address,
     )
 
     if file_path := download_video(video_url, output_path):
