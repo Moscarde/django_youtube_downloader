@@ -16,11 +16,16 @@
 	</head>
 	<body>
 		<h1>Youtube Video Downloader</h1>
-		<form id="video-form">
+        <form id="video-form">
             {% csrf_token %}
             <div class="input-group">
                 <input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
-                <button type="submit" class="btn btn-primary"> Baixar </button>
+                <button type="submit" class="btn btn-primary">Baixar</button>
+            </div>
+            <div id="loading-spinner" class="text-center mt-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
             </div>
         </form>
 		<div class="container mt-5" id="video-table-container">

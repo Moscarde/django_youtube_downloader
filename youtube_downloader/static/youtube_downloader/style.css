@@ -56,3 +56,26 @@ form {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
 }
+
+/* Spinner: Inicialmente oculto */
+#loading-spinner {
+    visibility: hidden;
+    /* Mantém o elemento fora da visão */
+    height: 0;
+    /* Nenhuma altura */
+    opacity: 0;
+    /* Totalmente transparente */
+    overflow: hidden;
+    /* Garante que o conteúdo não ocupe espaço */
+    transition: height 0.5s ease, opacity 0.5s ease;
+}
+
+/* Classe para exibir o spinner */
+#loading-spinner.show {
+    visibility: visible;
+    /* Torna visível */
+    height: 60px;
+    /* Altura do spinner */
+    opacity: 1;
+    /* Totalmente opaco */
+}
