@@ -1,110 +1,90 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const videoTableBody = document.getElementById("video-table-body");
     const videoTableContainer = document.getElementById("video-table-container");
     const spinner = document.querySelector("#loading-spinner");
     const form = document.querySelector("#video-form");
-    const inputField = form.querySelector("input[name='video_url']");
-    const submitButton = form.querySelector("button[type='submit']");
+    const inputField = form?.querySelector("input[name='video_url']");
+    const submitButton = form?.querySelector("button[type='submit']");
+    const videoDownloadUrl = document.querySelector("#video-download-url")?.dataset.url;
+    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]")?.value;
 
-    // Função para desbloquear o formulário e remover o spinner
-    function unlockForm() {
-        spinner.classList.remove("show"); // Remove o spinner
-        form.querySelectorAll("input, button").forEach(el => el.removeAttribute("disabled")); // Desbloqueia
-    }
+    let isEmpty = false;
+    let lastFetchedData = null;
 
-    // Função para atualizar a tabela de vídeos
-    function updateVideoTable() {
-        fetch("/videos") // Rota criada para pegar os vídeos
-            .then(response => response.json())
-            .then(data => {
-                console.log("Vídeos:", data);
-                // Limpa a tabela antes de atualizar os dados
-                videoTableBody.innerHTML = "";
+    const toggleSpinner = (show) => {
+        spinner.classList.toggle("show", show);
+        form.querySelectorAll("input, button").forEach(el => el.toggleAttribute("disabled", show));
+    };
 
-                if (data.length > 0) {
-                    // Exibe a tabela suavemente
-                    videoTableContainer.classList.add("show");
-                    console.log("Tabela exibida");
+    const populateTable = (videos) => {
 
-                    // Preenche a tabela com os vídeos atualizados
-                    data.forEach((video, index) => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <th scope="row">${index + 1}</th>
-                            <td>${video.title}</td>
-                            <td><a href="${video.url}" target="_blank">${video.url}</a></td>
-                            <td>${video.status}</td>
-                        `;
-                        videoTableBody.appendChild(row);
+        const isDataIdentical = lastFetchedData && JSON.stringify(videos) === JSON.stringify(lastFetchedData);
 
-                        // Aplica a classe de transição para suavizar a entrada das linhas
-                        setTimeout(() => row.classList.add("show"), 10);
-
-                        // Verifica se a URL do vídeo na tabela é similar à fornecida no input
-                        if (video.url.trim() === inputField.value.trim()) {
-                            console.log("URL encontrada na tabela. Desbloqueando formulário...");
-                            unlockForm(); // Desbloqueia o formulário
-                        }
-                    });
-                } else {
-                    // Caso não haja vídeos, mantém a tabela oculta
-                    videoTableContainer.classList.remove("show");
-                    console.log("Nenhum vídeo encontrado");
-                }
-            })
-            .catch(error => console.error("Erro ao buscar vídeos:", error));
-    }
-
-    // Função para lidar com o envio do formulário
-    function handleFormSubmit(event) {
-        event.preventDefault(); // Impede o envio tradicional do formulário
-
-        // Obtém a URL do vídeo do campo de input
-        const videoUrl = inputField.value;
-
-        // Verifica se a URL foi fornecida
-        if (!videoUrl) {
-            alert("Por favor, insira uma URL válida.");
+        if (isDataIdentical) {
+            console.log("Os dados são idênticos aos anteriores. Não será necessário atualizar a tabela.");
             return;
         }
 
-        // Exibe o spinner
-        spinner.classList.add("show");
 
-        // Bloqueia o formulário e exibe o spinner com animação
-        form.querySelectorAll("input, button").forEach(el => el.setAttribute("disabled", "true"));
+        lastFetchedData = videos;
 
-        const videoDownloadUrl = document.querySelector("#video-download-url").dataset.url;
+        videoTableBody.innerHTML = "";
+        if (videos.length > 0) {
+            videoTableContainer.classList.add("show");
+            videos.forEach((video, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <th scope="row">${index + 1}</th>
+                    <td>${video.title}</td>
+                    <td><a href="${video.url}" target="_blank">${video.url}</a></td>
+                    <td>${video.status}</td>
+                `;
+                videoTableBody.appendChild(row);
+                setTimeout(() => row.classList.add("show"), 10);
 
-        // Envia a solicitação AJAX
+                if (video.url.trim() === inputField.value.trim()) toggleSpinner(false);
+            });
+            isEmpty = false;
+        } else {
+            videoTableContainer.classList.remove("show");
+            isEmpty = true;
+        }
+    };
+
+    const updateVideoTable = () => {
+        if (isEmpty) return;
+
+        fetch("/videos")
+            .then(response => response.json())
+            .then(data => populateTable(data))
+            .catch(error => console.error("Erro ao buscar vídeos:", error));
+    };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        if (!inputField?.value) return alert("Por favor, insira uma URL válida.");
+        toggleSpinner(true);
+
         fetch(videoDownloadUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value, // Inclui o token CSRF
+                "X-CSRFToken": csrfToken
             },
-            body: JSON.stringify({ video_url: videoUrl }),
+            body: JSON.stringify({ video_url: inputField.value }),
         })
             .then(response => response.json())
             .then(data => {
-                console.log("Resposta:", data);
+                isEmpty = false;
+
             })
             .catch(error => {
                 console.error("Erro:", error);
                 alert("Ocorreu um erro ao tentar enviar a solicitação.");
             });
-    }
+    };
 
-    // Adiciona o listener de evento no formulário
-    if (form) {
-        form.addEventListener("submit", handleFormSubmit);
-    } else {
-        console.error("Formulário não encontrado!");
-    }
-
-    // Atualiza a tabela a cada 15 segundos
-    setInterval(updateVideoTable, 15000);
-
-    // Chama a função de atualização ao carregar a página
+    form?.addEventListener("submit", handleFormSubmit);
+    setInterval(updateVideoTable, 1000);
     updateVideoTable();
 });

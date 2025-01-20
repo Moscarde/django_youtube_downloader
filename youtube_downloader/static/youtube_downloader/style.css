@@ -1,31 +1,58 @@
 body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+#main-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #f8f9fa;
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
 }
 
 h1 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
+    text-align: center;
 }
 
 form {
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
+    margin-bottom: 2rem;
 }
 
 .input-group {
     margin-top: 1rem;
 }
 
-/* Efeito suave para ocultar ou mostrar a tabela */
+#loading-spinner {
+    visibility: hidden;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: height 0.5s ease, opacity 0.5s ease;
+}
+
+#loading-spinner.show {
+    visibility: visible;
+    height: 60px;
+    opacity: 1;
+}
+
 #video-table-container {
     display: none;
     opacity: 0;
+    width: 100%;
+    margin-top: 2rem;
     transition: opacity 0.5s ease-in-out;
 }
 
@@ -34,7 +61,6 @@ form {
     opacity: 1;
 }
 
-/* Suaviza a transição das linhas ao serem adicionadas ou removidas */
 #video-table-body tr {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
@@ -44,7 +70,6 @@ form {
     opacity: 1;
 }
 
-/* Efeito de "Processando" */
 #video-table-body tr.processing {
     background-color: #f8d7da;
     color: #721c24;
@@ -54,28 +79,4 @@ form {
 
 #video-table-body tr.processing.fade {
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
-
-/* Spinner: Inicialmente oculto */
-#loading-spinner {
-    visibility: hidden;
-    /* Mantém o elemento fora da visão */
-    height: 0;
-    /* Nenhuma altura */
-    opacity: 0;
-    /* Totalmente transparente */
-    overflow: hidden;
-    /* Garante que o conteúdo não ocupe espaço */
-    transition: height 0.5s ease, opacity 0.5s ease;
-}
-
-/* Classe para exibir o spinner */
-#loading-spinner.show {
-    visibility: visible;
-    /* Torna visível */
-    height: 60px;
-    /* Altura do spinner */
-    opacity: 1;
-    /* Totalmente opaco */
 }

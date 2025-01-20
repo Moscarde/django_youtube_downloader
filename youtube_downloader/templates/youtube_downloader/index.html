@@ -15,39 +15,41 @@
 
 	</head>
 	<body>
-		<h1>Youtube Video Downloader</h1>
-        <form id="video-form">
-            {% csrf_token %}
-            <div class="input-group">
-                <input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
-                <button type="submit" class="btn btn-primary">Baixar</button>
-            </div>
-            <div id="loading-spinner" class="text-center mt-3">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
+        <div id="main-content">
+            <h1>Youtube Video Downloader</h1>
+            <form id="video-form">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
+                    <button type="submit" class="btn btn-primary">Baixar</button>
                 </div>
+                <div id="loading-spinner" class="text-center mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                </div>
+            </form>
+            <div id="video-table-container">
+                <h2>Lista de Vídeos</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="video-table-body">
+                        <!-- Tabela será preenchida via JS -->
+                    </tbody>
+                </table>
             </div>
-        </form>
-		<div class="container mt-5" id="video-table-container">
-			<h2>Lista de Vídeos</h2>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th scope="col">#</th>
-						<th scope="col">Título</th>
-						<th scope="col">URL</th>
-						<th scope="col">Status</th>
-					</tr>
-				</thead>
-				<tbody id="video-table-body">
-					<!-- Tabela será preenchida via JS -->
-				</tbody>
-			</table>
-		</div>
-
-		<!-- Scripts -->
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        </div>
+    
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <div id="video-download-url" data-url="{% url 'video_download' %}"></div>
-        <script src="{% static "youtube_downloader/scripts.js"%}"></script>
-	</body>
+        <script src="{% static "youtube_downloader/scripts.js" %}"></script>
+    </body>
 </html>
