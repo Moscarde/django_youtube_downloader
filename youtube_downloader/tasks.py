@@ -22,6 +22,7 @@ def download_youtube_video(video_url, output_path="downloads", ip_address=None):
         views=video_info["view_count"],
         upload_date=video_info["upload_date"],
         uploader=video_info["uploader"],
+        thumbnail_url=video_info["thumbnail"],
         status="Pendente",
         ip_address=ip_address,
     )

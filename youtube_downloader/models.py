@@ -11,6 +11,7 @@ class Video(models.Model):
     duration_s = models.PositiveIntegerField(null=True, blank=True)
     views = models.PositiveIntegerField(null=True, blank=True)
     upload_date = models.DateField(null=True, blank=True)
+    thumbnail_url = models.URLField(null=True, blank=True)
     uploader = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(
         max_length=50,
@@ -24,6 +25,7 @@ class Video(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ip_address = models.CharField(max_length=255, null=True, blank=True)
+
 
     class Meta:
         ordering = ["-updated_at"]
