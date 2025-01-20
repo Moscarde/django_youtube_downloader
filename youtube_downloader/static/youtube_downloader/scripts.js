@@ -7,12 +7,13 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/videos")  // Rota criada para pegar os vídeos
             .then(response => response.json())
             .then(data => {
-                // Limpa a tabela
+                // Limpa a tabela antes de atualizar os dados
                 videoTableBody.innerHTML = '';
 
                 if (data.length > 0) {
-                    // Se houver vídeos, exibe a tabela
-                    videoTableContainer.style.display = 'block';
+                    // Exibe a tabela suavemente
+                    videoTableContainer.classList.add('show');
+                    console.log('Tabela exibida');  // Log para verificar se a tabela está sendo exibida
 
                     // Preenche a tabela com os vídeos atualizados
                     data.forEach((video, index) => {
@@ -24,23 +25,18 @@ document.addEventListener("DOMContentLoaded", function () {
                             <td>${video.status}</td>
                         `;
                         videoTableBody.appendChild(row);
+
+                        // Aplica a classe de transição para suavizar a entrada das linhas
+                        setTimeout(() => row.classList.add('show'), 10);
                     });
                 } else {
                     // Caso não haja vídeos, mantém a tabela oculta
-                    videoTableContainer.style.display = 'none';
+                    videoTableContainer.classList.remove('show');
+                    console.log('Nenhum vídeo encontrado');  // Log para quando não houver vídeos
                 }
             })
             .catch(error => console.error('Erro ao buscar vídeos:', error));
     }
-
-    // Atualizar a tabela a cada 5 segundos
-    setInterval(updateVideoTable, 15000);
-
-    // Chama a função de atualização ao carregar a página
-    updateVideoTable();
-
-    // Função de manipulação de envio do formulário
-    const form = document.getElementById("video-form");
 
     // Função de manipulação de envio do formulário
     function handleFormSubmit(event) {
@@ -59,13 +55,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Adiciona uma linha fake "Processando..." na tabela enquanto o backend processa
         const processingRow = document.createElement('tr');
+        processingRow.classList.add('processing');
         processingRow.innerHTML = `
             <th scope="row">#</th>
             <td>Processando</td>
-            <td><a href="${videoUrl}" target="_blank">${videoUrl}</a></td>
+            <td>Processando</td>
             <td>Processando</td>
         `;
-        // videoTableBody.innerHTML = ''; // Limpa a tabela antes de adicionar a linha fake
+        // Insere a linha fake na primeira posição da tabela
         videoTableBody.insertBefore(processingRow, videoTableBody.firstChild);
 
         // Envia a solicitação AJAX
@@ -83,6 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Atualiza a tabela com os vídeos retornados
                 // updateVideoTable();
+
+                // Remover a linha "Processando" com efeito de fade
             })
             .catch(error => {
                 console.error("Erro:", error);
@@ -90,10 +89,17 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // Verifica se o formulário foi encontrado e adiciona o evento
+    // Adiciona o listener de evento no formulário
+    const form = document.querySelector("form");
     if (form) {
         form.addEventListener("submit", handleFormSubmit);
     } else {
         console.error("Formulário não encontrado!");
     }
+
+    // Atualiza a tabela a cada 5 segundos
+    setInterval(updateVideoTable, 15000);
+
+    // Chama a função de atualização ao carregar a página
+    updateVideoTable();
 });

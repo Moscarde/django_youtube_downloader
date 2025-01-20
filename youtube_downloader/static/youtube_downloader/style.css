@@ -21,3 +21,38 @@ form {
 .input-group {
     margin-top: 1rem;
 }
+
+/* Efeito suave para ocultar ou mostrar a tabela */
+#video-table-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#video-table-container.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Suaviza a transição das linhas ao serem adicionadas ou removidas */
+#video-table-body tr {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#video-table-body tr.show {
+    opacity: 1;
+}
+
+/* Efeito de "Processando" */
+#video-table-body tr.processing {
+    background-color: #f8d7da;
+    color: #721c24;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#video-table-body tr.processing.fade {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
