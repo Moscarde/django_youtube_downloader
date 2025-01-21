@@ -88,13 +88,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
+        const getVideoDuration = (durationInSeconds) => {
+            const hours = Math.floor(durationInSeconds / 3600); // Calcula as horas
+            const minutes = Math.floor((durationInSeconds % 3600) / 60); // Calcula os minutos
+            const seconds = durationInSeconds % 60; // Calcula os segundos restantes
+
+            // Formata para sempre ter 2 dígitos com padding, e retorna como string
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        };
+
         row.innerHTML = `
             <th scope="row">${index + 1}</th>
             <td><img class="img-thumb img-fluid rounded" src="${video.thumbnail_url}" alt="Thumbnail"></td>
-            <td>${video.title}</td>
             <td>
-                <p><strong>Canal:</strong> ${video.uploader}</p>
+                <p>${video.title}</p>
+                <p><strong>${video.uploader}</strong></p>
+            </td>
+            <td>
                 <p><strong>Views:</strong> ${video.views}</p>
+                <p><strong>Duração:</strong> ${getVideoDuration(video.duration_s)}</p>
             </td>
             <td><a href="${video.url}" target="_blank">${video.url}</a></td>
             <td>${getDownloadTag(video.status, video.file_path)}</td>
