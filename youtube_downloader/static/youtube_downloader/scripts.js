@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const createTableRow = (video, index) => {
         const row = document.createElement("tr");
+        const download_tag = video.status === "Baixado" ? `<a href="${video.file_path}" download>Download</a>` : "...";
         row.innerHTML = `
             <th scope="row">${index + 1}</th>
             <td><img class="img-thumb" src="${video.thumbnail_url}"></td>
@@ -70,8 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p><strong>Views:</strong> ${video.views}</p>
             </td>
             <td><a href="${video.url}" target="_blank">${video.url}</a></td>
+            <td>${download_tag}</td>
             <td>${video.status}</td>
-            <td><a href="${video.file_path}" download>Download</a></td>
         `;
         return row;
     };
