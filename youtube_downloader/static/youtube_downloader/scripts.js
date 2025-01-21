@@ -61,18 +61,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const createTableRow = (video, index) => {
         const row = document.createElement("tr");
-        const download_tag = video.status === "Baixado" ? `<a href="${video.file_path}" download>Download</a>` : "...";
+
+
+        // Estilização do status com base no valor
+        const getStatusBadge = (status) => {
+            switch (status) {
+                case "Baixado":
+                    return `<span class="badge bg-success"><i class="bi bi-check-circle"></i> ${status}</span>`;
+                case "Pendente":
+                    return `<span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> ${status}</span>`;
+                case "Excluído":
+                    return `<span class="badge bg-danger"><i class="bi bi-trash"></i> ${status}</span>`;
+                default:
+                    return `<span class="badge bg-secondary">${status}</span>`;
+            }
+        };
+
+        const getDownloadTag = (status, filePath) => {
+            switch (status) {
+                case "Baixado":
+                    return `<a href="${filePath}" download class="btn btn-primary btn-sm">Download</a>`;
+                case "Excluído":
+                    return `<span class="text-danger">Expirado...</span>`;
+                default:
+                    return `<span class="text-muted">Aguardando...</span>`;
+            }
+        };
+
         row.innerHTML = `
             <th scope="row">${index + 1}</th>
-            <td><img class="img-thumb" src="${video.thumbnail_url}"></td>
+            <td><img class="img-thumb img-fluid rounded" src="${video.thumbnail_url}" alt="Thumbnail"></td>
             <td>${video.title}</td>
             <td>
                 <p><strong>Canal:</strong> ${video.uploader}</p>
                 <p><strong>Views:</strong> ${video.views}</p>
             </td>
             <td><a href="${video.url}" target="_blank">${video.url}</a></td>
-            <td>${download_tag}</td>
-            <td>${video.status}</td>
+            <td>${getDownloadTag(video.status, video.file_path)}</td>
+            <td>${getStatusBadge(video.status)}</td>
         `;
         return row;
     };

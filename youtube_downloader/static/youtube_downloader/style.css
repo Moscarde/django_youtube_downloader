@@ -48,6 +48,7 @@ form {
     opacity: 1;
 }
 
+/* Estilo do container da tabela */
 #video-table-container {
     display: none;
     opacity: 0;
@@ -64,6 +65,7 @@ form {
 #video-table-body tr {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+    vertical-align: middle;
 }
 
 #video-table-body tr.show {
@@ -81,7 +83,16 @@ form {
     opacity: 0;
 }
 
+#video-table-body td,
+#video-table-body th {
+    text-align: center;
+    vertical-align: middle;
+}
+
 .img-thumb {
     height: 80px;
     object-fit: cover;
+    display: block;
+    margin: 0 auto;
+
 }
