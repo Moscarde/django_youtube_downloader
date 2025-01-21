@@ -80,3 +80,8 @@ form {
 #video-table-body tr.processing.fade {
     opacity: 0;
 }
+
+.img-thumb {
+    height: 80px;
+    object-fit: cover;
+}

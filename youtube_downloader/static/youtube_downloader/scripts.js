@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (videos.length > 0) {
             videoTableContainer.classList.add("show");
             videos.forEach((video, index) => {
+                console.log(video)
                 if (video.status === "Pendente" && videoProcessingId === null) {
                     videoProcessingId = video.id;
                 }
@@ -62,7 +63,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const row = document.createElement("tr");
         row.innerHTML = `
             <th scope="row">${index + 1}</th>
+            <td><img class="img-thumb" src="${video.thumbnail_url}"></td>
             <td>${video.title}</td>
+            <td>
+                <p><strong>Canal:</strong> ${video.uploader}</p>
+                <p><strong>Views:</strong> ${video.views}</p>
+            </td>
             <td><a href="${video.url}" target="_blank">${video.url}</a></td>
             <td>${video.status}</td>
         `;
