@@ -1,0 +1,140 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+#main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h1.custom-underline {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+h1.custom-underline::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    /* Faz o sublinhado ficar logo abaixo do texto */
+    left: 0;
+    width: 100%;
+    /* O sublinhado tem o mesmo comprimento do texto */
+    height: 5px;
+    /* Espessura do sublinhado */
+    background-color: #ff0000;
+    border-radius: 5px; 
+    /* Cor do sublinhado */
+}
+
+.rgb-animate {
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+    animation-name: rgb_anim;
+}
+
+@keyframes rgb_anim {
+    from {
+        filter: hue-rotate(0deg);
+    }
+
+    50% {
+        filter: hue-rotate(360deg);
+    }
+
+    to {
+        filter: hue-rotate(0deg);
+    }
+}
+
+form {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    margin-top: 1rem;
+}
+
+#loading-spinner {
+    visibility: hidden;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: height 0.5s ease, opacity 0.5s ease;
+}
+
+#loading-spinner.show {
+    visibility: visible;
+    height: 60px;
+    opacity: 1;
+}
+
+/* Estilo do container da tabela */
+#video-table-container {
+    display: none;
+    opacity: 0;
+    width: 100%;
+    margin-top: 2rem;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#video-table-container.show {
+    display: block;
+    opacity: 1;
+}
+
+#video-table-body tr {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    vertical-align: middle;
+}
+
+#video-table-body tr.show {
+    opacity: 1;
+}
+
+#video-table-body tr.processing {
+    background-color: #f8d7da;
+    color: #721c24;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#video-table-body tr.processing.fade {
+    opacity: 0;
+}
+
+#video-table-body td,
+#video-table-body th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.img-thumb {
+    height: 80px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+
+}

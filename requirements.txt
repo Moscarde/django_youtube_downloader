@@ -1,0 +1,7 @@
+celery
+django
+django-celery-results
+django-celery-beat
+djangorestframework
+yt-dlp
+python-slugify
