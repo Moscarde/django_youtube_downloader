@@ -19,9 +19,51 @@ body {
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-bottom: 1.5rem;
     text-align: center;
+}
+
+h1.custom-underline {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+h1.custom-underline::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    /* Faz o sublinhado ficar logo abaixo do texto */
+    left: 0;
+    width: 100%;
+    /* O sublinhado tem o mesmo comprimento do texto */
+    height: 5px;
+    /* Espessura do sublinhado */
+    background-color: #ff0000;
+    border-radius: 5px; 
+    /* Cor do sublinhado */
+}
+
+.rgb-animate {
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+    animation-name: rgb_anim;
+}
+
+@keyframes rgb_anim {
+    from {
+        filter: hue-rotate(0deg);
+    }
+
+    50% {
+        filter: hue-rotate(360deg);
+    }
+
+    to {
+        filter: hue-rotate(0deg);
+    }
 }
 
 form {

@@ -16,12 +16,12 @@
 	</head>
 	<body>
         <div id="main-content">
-            <h1>Youtube Video Downloader</h1>
+            <h1 class="custom-underline rgb-animate">Youtube Video Downloader</h1>
             <form id="video-form">
                 {% csrf_token %}
                 <div class="input-group">
                     <input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
-                    <button type="submit" class="btn btn-primary">Baixar</button>
+                    <button type="submit" class="btn btn-primary rgb-animate">Baixar</button>
                 </div>
                 <div id="loading-spinner" class="text-center mt-3">
                     <div class="spinner-border text-primary" role="status">
