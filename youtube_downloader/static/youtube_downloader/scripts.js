@@ -20,19 +20,63 @@ document.addEventListener("DOMContentLoaded", () => {
         form.querySelectorAll("input, button").forEach(el => el.toggleAttribute("disabled", show));
     };
 
+    const getStatusBadge = (status) => {
+        const badgeClasses = {
+            "Baixado": "bg-success",
+            "Pendente": "bg-warning text-dark",
+            "Excluído": "bg-danger",
+        };
+        return `<span class="badge ${badgeClasses[status] || 'bg-secondary'}"><i class="bi bi-${status === 'Baixado' ? 'check-circle' : status === 'Pendente' ? 'hourglass-split' : 'trash'}"></i> ${status}</span>`;
+    };
+
+    const getDownloadTag = (status, filePath) => {
+        if (status === "Baixado") {
+            return `<a href="${filePath}" download class="btn btn-primary btn-sm">Download</a>`;
+        }
+        if (status === "Excluído") {
+            return `<span class="text-danger">Expirado...</span>`;
+        }
+        return `<span class="text-muted">Aguardando...</span>`;
+    };
+
+    const getVideoDuration = (durationInSeconds) => {
+        const hours = Math.floor(durationInSeconds / 3600);
+        const minutes = Math.floor((durationInSeconds % 3600) / 60);
+        const seconds = durationInSeconds % 60;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    const createTableRow = (video, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <th scope="row">${index + 1}</th>
+            <td><img class="img-thumb img-fluid rounded" src="${video.thumbnail_url}" alt="Thumbnail"></td>
+            <td>
+                <p>${video.title}</p>
+                <p><strong>${video.uploader}</strong></p>
+            </td>
+            <td>
+                <p><strong>Views:</strong> ${video.views}</p>
+                <p><strong>Duração:</strong> ${getVideoDuration(video.duration_s)}</p>
+            </td>
+            <td><a href="${video.url}" target="_blank">${video.url}</a></td>
+            <td>${getDownloadTag(video.status, video.file_path)}</td>
+            <td>${getStatusBadge(video.status)}</td>
+        `;
+        return row;
+    };
+
     const populateTable = (videos) => {
         const isDataIdentical = lastFetchedData && JSON.stringify(videos) === JSON.stringify(lastFetchedData);
         if (isDataIdentical) return;
 
         lastFetchedData = videos;
         videoTableBody.innerHTML = "";
-
         let hasPending = false;
 
         if (videos.length > 0) {
             videoTableContainer.classList.add("show");
             videos.forEach((video, index) => {
-                console.log(video)
                 if (video.status === "Pendente" && videoProcessingId === null) {
                     videoProcessingId = video.id;
                 }
@@ -59,62 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         intervalId = setInterval(updateVideoTable, intervalTime);
     };
 
-    const createTableRow = (video, index) => {
-        const row = document.createElement("tr");
-
-
-        // Estilização do status com base no valor
-        const getStatusBadge = (status) => {
-            switch (status) {
-                case "Baixado":
-                    return `<span class="badge bg-success"><i class="bi bi-check-circle"></i> ${status}</span>`;
-                case "Pendente":
-                    return `<span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> ${status}</span>`;
-                case "Excluído":
-                    return `<span class="badge bg-danger"><i class="bi bi-trash"></i> ${status}</span>`;
-                default:
-                    return `<span class="badge bg-secondary">${status}</span>`;
-            }
-        };
-
-        const getDownloadTag = (status, filePath) => {
-            switch (status) {
-                case "Baixado":
-                    return `<a href="${filePath}" download class="btn btn-primary btn-sm">Download</a>`;
-                case "Excluído":
-                    return `<span class="text-danger">Expirado...</span>`;
-                default:
-                    return `<span class="text-muted">Aguardando...</span>`;
-            }
-        };
-
-        const getVideoDuration = (durationInSeconds) => {
-            const hours = Math.floor(durationInSeconds / 3600); // Calcula as horas
-            const minutes = Math.floor((durationInSeconds % 3600) / 60); // Calcula os minutos
-            const seconds = durationInSeconds % 60; // Calcula os segundos restantes
-
-            // Formata para sempre ter 2 dígitos com padding, e retorna como string
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        };
-
-        row.innerHTML = `
-            <th scope="row">${index + 1}</th>
-            <td><img class="img-thumb img-fluid rounded" src="${video.thumbnail_url}" alt="Thumbnail"></td>
-            <td>
-                <p>${video.title}</p>
-                <p><strong>${video.uploader}</strong></p>
-            </td>
-            <td>
-                <p><strong>Views:</strong> ${video.views}</p>
-                <p><strong>Duração:</strong> ${getVideoDuration(video.duration_s)}</p>
-            </td>
-            <td><a href="${video.url}" target="_blank">${video.url}</a></td>
-            <td>${getDownloadTag(video.status, video.file_path)}</td>
-            <td>${getStatusBadge(video.status)}</td>
-        `;
-        return row;
-    };
-
     const updateVideoTable = () => {
         if (isEmpty || isAwaitingResponse) return;
 
@@ -122,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then(data => {
                 populateTable(data);
-
                 if (!data.some(video => video.status === "Pendente") && videoProcessingId !== null) {
                     intervalTime = 10000;
                     clearInterval(intervalId);
@@ -165,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     form?.addEventListener("submit", handleFormSubmit);
-
     intervalId = setInterval(updateVideoTable, intervalTime);
     updateVideoTable();
 });
