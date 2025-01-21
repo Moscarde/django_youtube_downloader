@@ -12,7 +12,7 @@
 
 		<title>Youtube Video Downloader</title>
 		<link rel="stylesheet" href="{% static "youtube_downloader/style.css" %}">
-
+        <link rel="icon" href="{% static 'youtube_downloader/favicon.ico' %}" type="image/x-icon" />
 	</head>
 	<body>
         <div id="main-content">
@@ -21,7 +21,7 @@
                 {% csrf_token %}
                 <div class="input-group">
                     <input type="url" name="video_url" class="form-control" placeholder="Insira a URL do vídeo" required />
-                    <button type="submit" class="btn btn-primary rgb-animate">Baixar</button>
+                    <button type="submit" class="btn btn-primary">Baixar</button>
                 </div>
                 <div id="loading-spinner" class="text-center mt-3">
                     <div class="spinner-border text-primary" role="status">
