@@ -9,7 +9,7 @@ from .utils import is_valid_youtube_url
 
 
 @shared_task
-def download_youtube_video(video_url, output_path="downloads", ip_address=None):
+def download_youtube_video(video_url, output_path="media/videos", ip_address=None):
     if not is_valid_youtube_url(video_url):
         raise ValueError("A URL fornecida não é uma URL válida do YouTube.")
 
@@ -61,13 +61,14 @@ def get_video_info(video_url):
 
 def download_video(video_url, output_path):
     options = {
-        "outtmpl": f"{output_path}/%(title)s.%(ext)s",  # Nome do arquivo de saída
+        "outtmpl": f"%(title)s.%(ext)s",  # Nome do arquivo de saída
         "format": "bestvideo+bestaudio/best",  # Melhor qualidade disponível
     }
     try:
         with YoutubeDL(options) as ydl:
             info_dict = ydl.extract_info(video_url, download=True)
             filename = ydl.prepare_filename(info_dict)
+            filename = output_path + "/" + re.sub(r"[^\w\-. ]", "_", filename)
         print("Download concluído!")
         return filename
     except Exception as e:
