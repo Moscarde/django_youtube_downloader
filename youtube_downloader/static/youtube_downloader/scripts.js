@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </td>
             <td><a href="${video.url}" target="_blank">${video.url}</a></td>
             <td>${video.status}</td>
+            <td><a href="${video.file_path}" download>Download</a></td>
         `;
         return row;
     };
