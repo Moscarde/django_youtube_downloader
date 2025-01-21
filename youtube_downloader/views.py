@@ -1,23 +1,26 @@
+from datetime import timedelta
+
 from django.core.cache import cache
 from django.shortcuts import render
+from django.utils import timezone
 from rest_framework import response, status, views
 
 from .models import Video
 from .serializers import VideoSerializer
 from .tasks import download_youtube_video
 from .utils import is_valid_youtube_url
-from django.utils import timezone
-from datetime import timedelta
 
 
 class VideoListView(views.APIView):
     """Retrieve a list of all videos."""
 
     def get(self, request):
-        ip_address = request.META.get('REMOTE_ADDR')
+        ip_address = request.META.get("REMOTE_ADDR")
         now = timezone.now()
         five_minutes_ago = now - timedelta(minutes=5)
-        videos = Video.objects.filter(ip_address=ip_address, updated_at__gte=five_minutes_ago)
+        videos = Video.objects.filter(
+            ip_address=ip_address, updated_at__gte=five_minutes_ago
+        )
         serialized_response = VideoSerializer(videos, many=True).data
         return response.Response(data=serialized_response, status=status.HTTP_200_OK)
 
@@ -59,9 +62,4 @@ class HomePageView(views.APIView):
     """Render the homepage with video objects."""
 
     def get(self, request):
-        ip_address = request.META.get('REMOTE_ADDR')
-
-        now = timezone.now()
-        five_minutes_ago = now - timedelta(minutes=5)
-        videos = Video.objects.filter(ip_address=ip_address, updated_at__gte=five_minutes_ago)
-        return render(request, "youtube_downloader/index.html", {"videos": videos})
+        return render(request, "youtube_downloader/index.html")
